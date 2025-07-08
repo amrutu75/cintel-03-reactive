@@ -1,4 +1,4 @@
-from shiny import App, ui, render
+from shiny import App, ui, render, reactive
 from shinywidgets import render_widget, output_widget
 import plotly.express as px
 from palmerpenguins import load_penguins
@@ -40,24 +40,29 @@ app_ui = ui.page_fluid(
 
 # Server
 def server(input, output, session):
+
+    # Reactive calculation inside server()
+    @reactive.calc
+    def filtered_data():
+        return penguins_df[penguins_df["species"].isin(input.selected_species_list())]
+
     @output
     @render.table
     def data_table():
-        return penguins_df
+        return filtered_data()
 
     @output
     @render.table
     def data_grid():
-        return penguins_df
+        return filtered_data()
 
     @output
     @render_widget
     def plotly_histogram():
         col = input.selected_attribute()
         bins = input.plotly_bin_count()
-        filtered_df = penguins_df[penguins_df["species"].isin(input.selected_species_list())]
         fig = px.histogram(
-            filtered_df,
+            filtered_data(),
             x=col,
             nbins=int(bins),
             color="species",
@@ -70,11 +75,9 @@ def server(input, output, session):
     def seaborn_histogram():
         col = input.selected_attribute()
         bins = input.seaborn_bin_count()
-        filtered_df = penguins_df[penguins_df["species"].isin(input.selected_species_list())]
-
         fig, ax = plt.subplots()
         sns.histplot(
-            data=filtered_df,
+            data=filtered_data(),
             x=col,
             bins=int(bins),
             hue="species",
@@ -86,9 +89,8 @@ def server(input, output, session):
     @output
     @render_widget
     def plotly_scatterplot():
-        filtered_df = penguins_df[penguins_df["species"].isin(input.selected_species_list())]
         fig = px.scatter(
-            filtered_df,
+            filtered_data(),
             x="bill_depth_mm",
             y="bill_length_mm",
             color="species",
@@ -103,3 +105,6 @@ def server(input, output, session):
 
 # App
 app = App(app_ui, server)
+
+     
+            
