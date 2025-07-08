@@ -17,8 +17,8 @@ app_ui = ui.page_fluid(
                 "selected_attribute", "Select attribute",
                 ["bill_length_mm", "bill_depth_mm", "body_mass_g"]
             ),
-            ui.input_numeric("plotly_bin_count", "Plotly Histogram Bins", value=200),
-            ui.input_slider("seaborn_bin_count", "Seaborn Histogram Bins", 0, 200, 50),
+            ui.input_numeric("plotly_bin_count", "Plotly Histogram Bins", value=50),
+            ui.input_slider("seaborn_bin_count", "Seaborn Histogram Bins", 0, 100, 50),
             ui.input_checkbox_group(
                 "selected_species_list", "Filter Species",
                 ["Adelie", "Gentoo", "Chinstrap"],
