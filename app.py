@@ -102,9 +102,18 @@ def server(input, output, session):
             title="Bill Depth vs. Bill Length by Penguin Species"
         )
         return fig
+#Data Table and Data Grid
+with ui.layout_columns():
+    with ui.card(full_screen=True):
+        ui.h2("Penguin Data Table")
+        @render.data_frame
+        def penguins_datatable():
+            return render.DataTable(filtered_data())
 
+    with ui.card(full_screen=True):
+        ui.h2("Penguin Data Grid")
+        @render.data_frame
+        def penguins_datagrid():
+            return render.DataGrid(filtered_data())
 # App
 app = App(app_ui, server)
-
-     
-            
